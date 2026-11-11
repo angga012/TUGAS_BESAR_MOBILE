@@ -27,6 +27,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { KOST_CONTACT, makePhoneCall } from '../services/telephonyService';
 
 type FilterTab = 'semua' | 'dikerjakan' | 'verifikasi' | 'selesai';
 
@@ -36,10 +37,10 @@ export default function ComplaintScreen() {
   const handleHubungiSegera = () => {
     Alert.alert(
       'Hubungi Pengelola',
-      'HOTLINE 24 JAM\n0811-9988-2424\n\nPak Hendra - Pengelola Kost Harmony Living\n\nHubungi sekarang untuk keadaan darurat?',
+      `HOTLINE 24 JAM\n${KOST_CONTACT.phone}\n\n${KOST_CONTACT.name}\n\nHubungi sekarang untuk keadaan darurat?`,
       [
         { text: 'Batal', style: 'cancel' },
-        { text: '📞 Hubungi', onPress: () => Alert.alert('Menghubungi...', 'Meneruskan ke 0811-9988-2424') },
+        { text: '📞 Hubungi', onPress: () => makePhoneCall(KOST_CONTACT.phone) },
       ]
     );
   };

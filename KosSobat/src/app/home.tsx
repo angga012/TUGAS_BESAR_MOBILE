@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
 import {
+  AlertTriangle,
   Bell,
   Building2,
   Calendar,
@@ -12,12 +13,15 @@ import {
   Megaphone,
   MessageSquare,
   Receipt,
+  RefreshCw,
   User,
   Wallet,
   Wrench,
 } from 'lucide-react-native';
 import {
+  ActivityIndicator,
   Alert,
+  RefreshControl,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -26,8 +30,19 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LifecycleCard } from '../components/LifecycleCard';
+import { LocationCard } from '../components/LocationCard';
+import { SensorCard } from '../components/SensorCard';
+import { TelephonyNotificationCard } from '../components/TelephonyNotificationCard';
+import { useKostDashboard } from '../hooks/useKostDashboard';
 
 export default function BerandaPenghuniScreen() {
+  const { data, isLoading, isRefreshing, error, refetch, onRefresh } = useKostDashboard();
+
+  const formatRupiah = (value?: number) => {
+    if (typeof value !== 'number') return 'Rp 0';
+    return `Rp ${value.toLocaleString('id-ID')}`;
+  };
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
@@ -52,194 +67,256 @@ export default function BerandaPenghuniScreen() {
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
-
-        {/* 1. Hero Card Sapaan */}
-        <View style={styles.welcomeCard}>
-          <View style={styles.welcomeTopRow}>
-            <View style={styles.brandPill}>
-              <Text style={styles.brandPillText}>KOSSOBAT</Text>
-            </View>
-            <TouchableOpacity style={styles.editBtn} activeOpacity={0.7}>
-              <Edit2 size={13} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.greetingTitle}>Selamat datang, Marshell!</Text>
-          <View style={styles.roomPill}>
-            <DoorOpen size={14} color="#BFDBFE" />
-            <Text style={styles.roomText}>Penghuni Kamar A12</Text>
-          </View>
-        </View>
-
-        {/* 2. Card Tagihan Kos (Keuangan) */}
-        <View style={styles.billCard}>
-          <View style={styles.billHeaderRow}>
-            <View style={styles.billHeaderLeft}>
-              <View style={styles.billIconBox}>
-                <Wallet size={19} color="#FFFFFF" />
-              </View>
-              <View>
-                <Text style={styles.billCategory}>KEUANGAN</Text>
-                <Text style={styles.billTitle}>Tagihan Kos</Text>
-              </View>
-            </View>
-
-            <View style={styles.dueDateBadge}>
-              <Text style={styles.dueDateText}>Jatuh Tempo 5 Hari</Text>
-            </View>
-          </View>
-
-          <View style={styles.billBottomRow}>
-            <View>
-              <Text style={styles.billAmountLabel}>Total Perlu Dibayar</Text>
-              <Text style={styles.billAmountValue}>Rp 1.150.000</Text>
-            </View>
-
-            <TouchableOpacity
-              style={styles.detailBtn}
-              activeOpacity={0.8}
-              onPress={() => router.push('/payment')}>
-              <Text style={styles.detailBtnText}>Lihat Detail ➔</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* 3. Section Menu Cepat (Grid 2x2) */}
-        <View style={styles.sectionWrap}>
-          <View style={styles.sectionHeaderBetween}>
-            <Text style={styles.sectionTitle}>Menu Cepat</Text>
-            <Text style={styles.sectionCaption}>Layanan Utama</Text>
-          </View>
-
-          <View style={styles.quickGrid}>
-            {/* Pembayaran */}
-            <TouchableOpacity
-              style={styles.gridCard}
-              activeOpacity={0.7}
-              onPress={() => router.push('/payment')}>
-              <View style={[styles.gridIconBox, { backgroundColor: '#EFF6FF' }]}>
-                <CreditCard size={20} color="#2563EB" />
-              </View>
-              <Text style={styles.gridTitle}>Pembayaran</Text>
-              <Text style={styles.gridDesc}>Tagihan & Riwayat Sewa</Text>
-            </TouchableOpacity>
-
-            {/* Lapor Kerusakan */}
-            <TouchableOpacity
-              style={styles.gridCard}
-              activeOpacity={0.7}
-              onPress={() => Alert.alert('Menu', 'Lapor Kerusakan Fasilitas')}>
-              <View style={[styles.gridIconBox, { backgroundColor: '#FEE2E2' }]}>
-                <Wrench size={20} color="#DC2626" />
-              </View>
-              <Text style={styles.gridTitle}>Lapor Kerusakan</Text>
-              <Text style={[styles.gridDesc, { color: '#DC2626' }]}>
-                Komplain Cepat 24 Jam
-              </Text>
-            </TouchableOpacity>
-
-            {/* Pengumuman */}
-            <TouchableOpacity
-              style={styles.gridCard}
-              activeOpacity={0.7}
-              onPress={() => Alert.alert('Menu', 'Pengumuman & Agenda')}>
-              <View style={[styles.gridIconBox, { backgroundColor: '#EFF6FF' }]}>
-                <Megaphone size={20} color="#2563EB" />
-              </View>
-              <Text style={styles.gridTitle}>Pengumuman</Text>
-              <Text style={styles.gridDesc}>& Agenda Kegiatan</Text>
-            </TouchableOpacity>
-
-            {/* Kamar & Penghuni */}
-            <TouchableOpacity
-              style={styles.gridCard}
-              activeOpacity={0.7}
-              onPress={() => Alert.alert('Menu', 'Kamar & Penghuni')}>
-              <View style={[styles.gridIconBox, { backgroundColor: '#EEF2FF' }]}>
-                <Building2 size={20} color="#4F46E5" />
-              </View>
-              <Text style={styles.gridTitle}>Kamar & Penghuni</Text>
-              <Text style={styles.gridDesc}>Data Unit & Profil Warga</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* 4. Section Pengumuman & Agenda */}
-        <View style={styles.sectionWrap}>
-          <View style={styles.sectionHeaderBetween}>
-            <View style={styles.headerIconRow}>
-              <Calendar size={17} color="#2563EB" />
-              <Text style={styles.sectionTitle}>Pengumuman & Agenda</Text>
-            </View>
-            <TouchableOpacity activeOpacity={0.7}>
-              <Text style={styles.seeAllLink}>Lihat Semua</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Pengumuman Penting */}
-          <View style={styles.noticeCard}>
-            <View style={styles.noticeTopRow}>
-              <View style={styles.urgentBadge}>
-                <View style={styles.redDot} />
-                <Text style={styles.urgentText}>Penting</Text>
-              </View>
-              <Text style={styles.noticeDate}>10 Oktober 2026</Text>
-            </View>
-            <Text style={styles.noticeTitle}>Pemadaman Air Sementara</Text>
-            <Text style={styles.noticeBody}>
-              Jadwal: 14.00 – 16.00 WIB untuk pembersihan berkala tandon utama lantai 3.
-            </Text>
-            <View style={styles.noticeAlertBox}>
-              <Info size={15} color="#64748B" />
-              <Text style={styles.noticeAlertText}>
-                Catatan Pengelola: Harap menampung air secukupnya sebelum pukul 13.30 WIB.
-              </Text>
-            </View>
-          </View>
-
-          {/* Agenda Kerja Bakti */}
-          <View style={styles.noticeCard}>
-            <View style={styles.noticeTopRow}>
-              <View style={styles.agendaBadge}>
-                <Text style={styles.agendaText}>Agenda</Text>
-              </View>
-              <Text style={styles.noticeDate}>18 Oktober 2026</Text>
-            </View>
-            <Text style={styles.noticeTitle}>Kerja Bakti Bersama Kos</Text>
-            <Text style={styles.noticeBody}>
-              Pukul 07.30 WIB • Halaman & Dapur Bersama
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={onRefresh}
+            colors={['#2563EB']}
+            tintColor="#2563EB"
+          />
+        }>
+        {isLoading && !data ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#2563EB" />
+            <Text style={styles.loadingTitle}>Memuat Data KosSobat...</Text>
+            <Text style={styles.loadingSub}>
+              Mengambil data kamar, tagihan sewa, dan pengumuman dari server
             </Text>
           </View>
-        </View>
-
-        {/* 5. Section Status Pembayaran Terkini */}
-        <View style={styles.sectionWrap}>
-          <View style={styles.sectionHeaderBetween}>
-            <Text style={styles.sectionTitle}>Status Pembayaran Terkini</Text>
-            <TouchableOpacity activeOpacity={0.7}>
-              <Text style={styles.seeAllLink}>Riwayat</Text>
+        ) : error ? (
+          <View style={styles.errorCard}>
+            <AlertTriangle size={24} color="#DC2626" />
+            <Text style={styles.errorTitle}>Gagal Mengambil Data</Text>
+            <Text style={styles.errorText}>{error}</Text>
+            <TouchableOpacity style={styles.retryBtn} onPress={refetch} activeOpacity={0.8}>
+              <RefreshCw size={14} color="#FFFFFF" />
+              <Text style={styles.retryBtnText}>Coba Lagi</Text>
             </TouchableOpacity>
           </View>
+        ) : (
+          <>
+            {/* 1. Hero Card Sapaan */}
+            <View style={styles.welcomeCard}>
+              <View style={styles.welcomeTopRow}>
+                <View style={styles.brandPill}>
+                  <Text style={styles.brandPillText}>KOSSOBAT</Text>
+                </View>
+                <TouchableOpacity style={styles.editBtn} activeOpacity={0.7}>
+                  <Edit2 size={13} color="#FFFFFF" />
+                </TouchableOpacity>
+              </View>
 
-          <TouchableOpacity
-            style={styles.paymentStatusCard}
-            activeOpacity={0.8}
-            onPress={() => router.push('/payment')}>
-            <View style={styles.paymentIconBox}>
-              <Receipt size={20} color="#DC2626" />
+              <Text style={styles.greetingTitle}>
+                Selamat datang, {data?.penghuni.nama ?? 'Marshell'}!
+              </Text>
+              <View style={styles.roomPill}>
+                <DoorOpen size={14} color="#BFDBFE" />
+                <Text style={styles.roomText}>
+                  Penghuni Kamar {data?.penghuni.kamar ?? 'A12'}
+                </Text>
+              </View>
             </View>
-            <View style={styles.paymentDetailBox}>
-              <Text style={styles.paymentPeriod}>Bulan Oktober 2026</Text>
-              <Text style={styles.paymentAmount}>Rp 1.150.000</Text>
-              <Text style={styles.paymentSub}>Termasuk Wi-Fi & Sampah</Text>
+
+            {/* 2. Card Tagihan Kos (Keuangan) */}
+            <View style={styles.billCard}>
+              <View style={styles.billHeaderRow}>
+                <View style={styles.billHeaderLeft}>
+                  <View style={styles.billIconBox}>
+                    <Wallet size={19} color="#FFFFFF" />
+                  </View>
+                  <View>
+                    <Text style={styles.billCategory}>KEUANGAN</Text>
+                    <Text style={styles.billTitle}>Tagihan Kos</Text>
+                  </View>
+                </View>
+
+                <View style={styles.dueDateBadge}>
+                  <Text style={styles.dueDateText}>
+                    Jatuh Tempo {data?.tagihanTerkini.sisaHari ?? 5} Hari
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.billBottomRow}>
+                <View>
+                  <Text style={styles.billAmountLabel}>Total Perlu Dibayar</Text>
+                  <Text style={styles.billAmountValue}>
+                    {formatRupiah(data?.tagihanTerkini.total ?? 1150000)}
+                  </Text>
+                </View>
+
+                <TouchableOpacity
+                  style={styles.detailBtn}
+                  activeOpacity={0.8}
+                  onPress={() => router.push('/payment')}>
+                  <Text style={styles.detailBtnText}>Lihat Detail ➔</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <View style={styles.unpaidPill}>
-              <Text style={styles.unpaidText}>Belum Bayar</Text>
+
+            {/* Location-Based Services (LBS): Presensi & GPS */}
+            <LocationCard />
+
+            {/* Device Sensors: Akselerometer & Shake to Emergency */}
+            <SensorCard />
+
+            {/* Telephony & Notifications: Hotline Pengelola & Pengingat Sewa */}
+            <TelephonyNotificationCard />
+
+            {/* Component & App Lifecycle: Memory Management & State */}
+            <LifecycleCard />
+
+            {/* 3. Section Menu Cepat (Grid 2x2) */}
+            <View style={styles.sectionWrap}>
+              <View style={styles.sectionHeaderBetween}>
+                <Text style={styles.sectionTitle}>Menu Cepat</Text>
+                <Text style={styles.sectionCaption}>Layanan Utama</Text>
+              </View>
+
+              <View style={styles.quickGrid}>
+                {/* Pembayaran */}
+                <TouchableOpacity
+                  style={styles.gridCard}
+                  activeOpacity={0.7}
+                  onPress={() => router.push('/payment')}>
+                  <View style={[styles.gridIconBox, { backgroundColor: '#EFF6FF' }]}>
+                    <CreditCard size={20} color="#2563EB" />
+                  </View>
+                  <Text style={styles.gridTitle}>Pembayaran</Text>
+                  <Text style={styles.gridDesc}>Tagihan & Riwayat Sewa</Text>
+                </TouchableOpacity>
+
+                {/* Lapor Kerusakan */}
+                <TouchableOpacity
+                  style={styles.gridCard}
+                  activeOpacity={0.7}
+                  onPress={() => router.push('/complaint')}>
+                  <View style={[styles.gridIconBox, { backgroundColor: '#FEE2E2' }]}>
+                    <Wrench size={20} color="#DC2626" />
+                  </View>
+                  <Text style={styles.gridTitle}>Lapor Kerusakan</Text>
+                  <Text style={[styles.gridDesc, { color: '#DC2626' }]}>
+                    Komplain Cepat 24 Jam
+                  </Text>
+                </TouchableOpacity>
+
+                {/* Pengumuman */}
+                <TouchableOpacity
+                  style={styles.gridCard}
+                  activeOpacity={0.7}
+                  onPress={() => Alert.alert('Menu', 'Pengumuman & Agenda')}>
+                  <View style={[styles.gridIconBox, { backgroundColor: '#EFF6FF' }]}>
+                    <Megaphone size={20} color="#2563EB" />
+                  </View>
+                  <Text style={styles.gridTitle}>Pengumuman</Text>
+                  <Text style={styles.gridDesc}>& Agenda Kegiatan</Text>
+                </TouchableOpacity>
+
+                {/* Kamar & Penghuni */}
+                <TouchableOpacity
+                  style={styles.gridCard}
+                  activeOpacity={0.7}
+                  onPress={() => Alert.alert('Menu', 'Kamar & Penghuni')}>
+                  <View style={[styles.gridIconBox, { backgroundColor: '#EEF2FF' }]}>
+                    <Building2 size={20} color="#4F46E5" />
+                  </View>
+                  <Text style={styles.gridTitle}>Kamar & Penghuni</Text>
+                  <Text style={styles.gridDesc}>Data Unit & Profil Warga</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <ChevronRight size={18} color="#94A3B8" />
-          </TouchableOpacity>
-        </View>
+
+            {/* 4. Section Pengumuman & Agenda */}
+            <View style={styles.sectionWrap}>
+              <View style={styles.sectionHeaderBetween}>
+                <View style={styles.headerIconRow}>
+                  <Calendar size={17} color="#2563EB" />
+                  <Text style={styles.sectionTitle}>Pengumuman & Agenda</Text>
+                </View>
+                <TouchableOpacity activeOpacity={0.7}>
+                  <Text style={styles.seeAllLink}>Lihat Semua</Text>
+                </TouchableOpacity>
+              </View>
+
+              {data?.pengumuman && data.pengumuman.length > 0 ? (
+                data.pengumuman.map((item) => (
+                  <View key={item.id} style={styles.noticeCard}>
+                    <View style={styles.noticeTopRow}>
+                      <View
+                        style={
+                          item.kategori === 'penting'
+                            ? styles.urgentBadge
+                            : styles.agendaBadge
+                        }>
+                        {item.kategori === 'penting' && <View style={styles.redDot} />}
+                        <Text
+                          style={
+                            item.kategori === 'penting'
+                              ? styles.urgentText
+                              : styles.agendaText
+                          }>
+                          {item.kategori === 'penting' ? 'Penting' : 'Agenda'}
+                        </Text>
+                      </View>
+                      <Text style={styles.noticeDate}>{item.tanggal}</Text>
+                    </View>
+                    <Text style={styles.noticeTitle}>{item.judul}</Text>
+                    <Text style={styles.noticeBody}>{item.konten}</Text>
+                    {item.catatanPengelola && (
+                      <View style={styles.noticeAlertBox}>
+                        <Info size={15} color="#64748B" />
+                        <Text style={styles.noticeAlertText}>
+                          Catatan Pengelola: {item.catatanPengelola}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                ))
+              ) : (
+                <View style={styles.noticeCard}>
+                  <Text style={styles.noticeBody}>Tidak ada pengumuman baru.</Text>
+                </View>
+              )}
+            </View>
+
+            {/* 5. Section Status Pembayaran Terkini */}
+            <View style={styles.sectionWrap}>
+              <View style={styles.sectionHeaderBetween}>
+                <Text style={styles.sectionTitle}>Status Pembayaran Terkini</Text>
+                <TouchableOpacity activeOpacity={0.7}>
+                  <Text style={styles.seeAllLink}>Riwayat</Text>
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity
+                style={styles.paymentStatusCard}
+                activeOpacity={0.8}
+                onPress={() => router.push('/payment')}>
+                <View style={styles.paymentIconBox}>
+                  <Receipt size={20} color="#DC2626" />
+                </View>
+                <View style={styles.paymentDetailBox}>
+                  <Text style={styles.paymentPeriod}>
+                    Bulan {data?.tagihanTerkini.periode ?? 'Oktober 2026'}
+                  </Text>
+                  <Text style={styles.paymentAmount}>
+                    {formatRupiah(data?.tagihanTerkini.total ?? 1150000)}
+                  </Text>
+                  <Text style={styles.paymentSub}>
+                    {data?.tagihanTerkini.keterangan ?? 'Termasuk Wi-Fi & Sampah'}
+                  </Text>
+                </View>
+                <View style={styles.unpaidPill}>
+                  <Text style={styles.unpaidText}>
+                    {data?.tagihanTerkini.status === 'lunas' ? 'Lunas' : 'Belum Bayar'}
+                  </Text>
+                </View>
+                <ChevronRight size={18} color="#94A3B8" />
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
 
         <View style={{ height: 90 }} />
       </ScrollView>
@@ -345,6 +422,67 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 16,
     gap: 16,
+  },
+
+  // Loading & Error States (Poin 1: REST API & Async)
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 50,
+    paddingHorizontal: 24,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    gap: 12,
+  },
+  loadingTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginTop: 8,
+  },
+  loadingSub: {
+    fontSize: 13,
+    color: '#64748B',
+    textAlign: 'center',
+    lineHeight: 18,
+  },
+  errorCard: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 36,
+    paddingHorizontal: 24,
+    backgroundColor: '#FEF2F2',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#FECACA',
+    gap: 8,
+  },
+  errorTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#991B1B',
+  },
+  errorText: {
+    fontSize: 13,
+    color: '#B91C1C',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  retryBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#DC2626',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 12,
+  },
+  retryBtnText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
 
   // 1. Welcome Card

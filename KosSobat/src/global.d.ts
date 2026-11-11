@@ -9,3 +9,5 @@ declare module '*.jpeg';
 declare module '*.png';
 declare module '*.jfif';
 declare module '*.svg';
+
+declare module 'expo-notifications';
