@@ -227,8 +227,8 @@ export default function ComplaintScreen() {
           <View style={styles.techNoteBox}>
             <Edit2 size={12} color="#64748B" />
             <Text style={styles.techNoteText}>
-              Catatan Teknisi: "Membawa seal karet baru pengganti keran kuningan. Pengerjaan
-              perkiraan 25 menit."
+              Catatan Teknisi: &quot;Membawa seal karet baru pengganti keran kuningan. Pengerjaan
+              perkiraan 25 menit.&quot;
             </Text>
           </View>
         </View>
@@ -302,7 +302,7 @@ export default function ComplaintScreen() {
 
           <View style={styles.resolvedNoteBox}>
             <Text style={styles.resolvedNoteText}>
-              "Bohlam LED Philips 14W telah diganti baru. Jalur kelistrikan dites aman."
+              &quot;Bohlam LED Philips 14W telah diganti baru. Jalur kelistrikan dites aman.&quot;
             </Text>
           </View>
 

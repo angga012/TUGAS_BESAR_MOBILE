@@ -100,7 +100,7 @@ export default function BerandaPenghuniScreen() {
             <View style={styles.welcomeCard}>
               <View style={styles.welcomeTopRow}>
                 <View style={styles.brandPill}>
-                  <Text style={styles.brandPillText}>KOSSOBAT</Text>
+                  <Text style={styles.brandPillText}>KOSKU</Text>
                 </View>
                 <TouchableOpacity style={styles.editBtn} activeOpacity={0.7}>
                   <Edit2 size={13} color="#FFFFFF" />
@@ -154,18 +154,6 @@ export default function BerandaPenghuniScreen() {
                 </TouchableOpacity>
               </View>
             </View>
-
-            {/* Location-Based Services (LBS): Presensi & GPS */}
-            <LocationCard />
-
-            {/* Device Sensors: Akselerometer & Shake to Emergency */}
-            <SensorCard />
-
-            {/* Telephony & Notifications: Hotline Pengelola & Pengingat Sewa */}
-            <TelephonyNotificationCard />
-
-            {/* Component & App Lifecycle: Memory Management & State */}
-            <LifecycleCard />
 
             {/* 3. Section Menu Cepat (Grid 2x2) */}
             <View style={styles.sectionWrap}>
@@ -307,18 +295,36 @@ export default function BerandaPenghuniScreen() {
                     {data?.tagihanTerkini.keterangan ?? 'Termasuk Wi-Fi & Sampah'}
                   </Text>
                 </View>
-                <View style={styles.unpaidPill}>
+                <View style={[
+                  styles.unpaidPill,
+                  data?.tagihanTerkini.status === 'lunas' && styles.paidPill,
+                ]}>
                   <Text style={styles.unpaidText}>
-                    {data?.tagihanTerkini.status === 'lunas' ? 'Lunas' : 'Belum Bayar'}
+                    {data?.tagihanTerkini.status === 'lunas' ? 'Lunas' : 'Belum\nBayar'}
                   </Text>
                 </View>
                 <ChevronRight size={18} color="#94A3B8" />
               </TouchableOpacity>
             </View>
+            <View style={{ height: 90 }} />
+
+            {/* Technical Cards: LBS, Sensor, Telephony, Lifecycle — Ditempatkan di akhir konten */}
+            {/* Location-Based Services (LBS): Presensi & GPS */}
+            <LocationCard />
+
+            {/* Device Sensors: Akselerometer & Shake to Emergency */}
+            <SensorCard />
+
+            {/* Telephony & Notifications: Hotline Pengelola & Pengingat Sewa */}
+            <TelephonyNotificationCard />
+
+            {/* Component & App Lifecycle: Memory Management & State */}
+            <LifecycleCard />
+
           </>
         )}
 
-        <View style={{ height: 90 }} />
+        <View style={{ height: 100 }} />
       </ScrollView>
 
       {/* 6. Bottom Navigation Bar */}
@@ -803,6 +809,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 12,
+    alignItems: 'center',
+    minWidth: 60,
+  },
+  paidPill: {
+    backgroundColor: '#166534',
   },
   unpaidText: {
     fontSize: 11,

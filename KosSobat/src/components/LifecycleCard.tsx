@@ -8,13 +8,9 @@
  */
 
 import {
-  Activity,
   CheckCircle,
   Clock,
   Cpu,
-  Layers,
-  Power,
-  RefreshCw,
   ShieldCheck,
 } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';

@@ -120,7 +120,7 @@ export async function fetchCurrentLBS(): Promise<LocationResult> {
       ].filter(Boolean);
       addressText = parts.length > 0 ? parts.join(', ') : `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
     }
-  } catch (error) {
+  } catch {
     addressText = `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
   }
 

@@ -56,7 +56,7 @@ export async function getDashboardData(simulateDelayMs: number = 800): Promise<D
       timeoutMs: 3000,
     });
     return result.data;
-  } catch (error) {
+  } catch {
     // 2. Jika backend offline / belum siap, gunakan simulasi Promise & fallback mock data
     // Ini memastikan UI tidak freeze, loading state dapat teruji, dan aplikasi tetap berjalan stabil.
     if (simulateDelayMs > 0) {
@@ -79,7 +79,7 @@ export async function submitPaymentConfirmation(invoiceId: string, paymentMethod
         timestamp: new Date().toISOString(),
       }),
     });
-  } catch (error) {
+  } catch {
     // Simulasi respons sukses jika server belum siap
     await new Promise((resolve) => setTimeout(resolve, 600));
     return {
