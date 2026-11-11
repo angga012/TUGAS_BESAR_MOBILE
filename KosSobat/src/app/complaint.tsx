@@ -1,14 +1,17 @@
 import { router } from 'expo-router';
 import {
-  AlertTriangle,
   ArrowLeft,
+  Building2,
   CheckCircle2,
   CircleDashed,
   Clock,
+  DoorOpen,
   Edit2,
   HelpCircle,
+  Home,
   MapPin,
   MessageCircle,
+  MessageSquare,
   Phone,
   PlusCircle,
   ShieldAlert,
@@ -19,6 +22,7 @@ import {
 import { useState } from 'react';
 import {
   Alert,
+  Image,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -33,6 +37,7 @@ type FilterTab = 'semua' | 'dikerjakan' | 'verifikasi' | 'selesai';
 
 export default function ComplaintScreen() {
   const [activeTab, setActiveTab] = useState<FilterTab>('semua');
+  const [isLpr1090Cancelled, setIsLpr1090Cancelled] = useState(false);
 
   const handleHubungiSegera = () => {
     Alert.alert(
@@ -55,10 +60,21 @@ export default function ComplaintScreen() {
       'Apakah Anda yakin ingin membatalkan laporan #LPR-1090?',
       [
         { text: 'Tidak', style: 'cancel' },
-        { text: 'Ya, Batalkan', style: 'destructive', onPress: () => Alert.alert('Laporan dibatalkan') },
+        {
+          text: 'Ya, Batalkan',
+          style: 'destructive',
+          onPress: () => {
+            setIsLpr1090Cancelled(true);
+            Alert.alert('Sukses', 'Laporan #LPR-1090 berhasil dibatalkan.');
+          },
+        },
       ]
     );
   };
+
+  const showReport1 = activeTab === 'semua' || activeTab === 'dikerjakan';
+  const showReport2 = (activeTab === 'semua' || activeTab === 'verifikasi') && !isLpr1090Cancelled;
+  const showReport3 = activeTab === 'semua' || activeTab === 'selesai';
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -69,8 +85,13 @@ export default function ComplaintScreen() {
         <TouchableOpacity style={styles.circleBtn} activeOpacity={0.7} onPress={() => router.back()}>
           <ArrowLeft size={20} color="#0F172A" />
         </TouchableOpacity>
-        <Text style={styles.topBarTitle}>Lapor Kerusakan & Keluhan Fasil</Text>
-        <TouchableOpacity style={styles.circleBtn} activeOpacity={0.7}>
+        <Text style={styles.topBarTitle} numberOfLines={1}>
+          Lapor Kerusakan & Keluhan Fasilitas
+        </Text>
+        <TouchableOpacity
+          style={styles.circleBtn}
+          activeOpacity={0.7}
+          onPress={() => Alert.alert('Bantuan', 'Pusat bantuan pelaporan kerusakan fasilitas kos.')}>
           <HelpCircle size={20} color="#0F172A" />
         </TouchableOpacity>
       </View>
@@ -352,21 +373,29 @@ export default function ComplaintScreen() {
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} activeOpacity={0.7} onPress={() => router.push('/home')}>
+        <TouchableOpacity
+          style={styles.navItem}
+          activeOpacity={0.7}
+          onPress={() => router.push('/home')}>
           <View style={styles.navItemInner}>
-            <Wrench size={22} color="#2563EB" />
-            <Text style={[styles.navLabel, { color: '#2563EB' }]}>Laporan</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} activeOpacity={0.7} onPress={() => router.push('/home')}>
-          <View style={styles.navItemInner}>
-            <AlertTriangle size={22} color="#94A3B8" />
+            <Home size={22} color="#64748B" />
             <Text style={styles.navLabel}>Beranda</Text>
           </View>
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.navItem} activeOpacity={0.7}>
           <View style={styles.navItemInner}>
-            <MessageCircle size={22} color="#94A3B8" />
+            <Wrench size={22} color="#2563EB" />
+            <Text style={[styles.navLabel, styles.navLabelActive]}>Laporan</Text>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.navItem}
+          activeOpacity={0.7}
+          onPress={() => router.push('/forum')}>
+          <View style={styles.navItemInner}>
+            <MessageSquare size={22} color="#64748B" />
             <Text style={styles.navLabel}>Chat</Text>
           </View>
         </TouchableOpacity>
@@ -688,5 +717,6 @@ const styles = StyleSheet.create({
   navItem: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 10 },
   navItemInner: { alignItems: 'center', gap: 3 },
   navLabel: { fontSize: 11, fontWeight: '600', color: '#94A3B8' },
+  navLabelActive: { fontSize: 11, fontWeight: '800', color: '#2563EB' },
 });
 

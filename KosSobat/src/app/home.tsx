@@ -59,7 +59,7 @@ export default function BerandaPenghuniScreen() {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.notifBtn} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.notifBtn} activeOpacity={0.7} onPress={() => router.push('/announcements' as any)}>
           <Bell size={20} color="#0F172A" />
           <View style={styles.notifBadgeDot} />
         </TouchableOpacity>
@@ -193,7 +193,7 @@ export default function BerandaPenghuniScreen() {
                 <TouchableOpacity
                   style={styles.gridCard}
                   activeOpacity={0.7}
-                  onPress={() => Alert.alert('Menu', 'Pengumuman & Agenda')}>
+                  onPress={() => router.push('/announcements')}>
                   <View style={[styles.gridIconBox, { backgroundColor: '#EFF6FF' }]}>
                     <Megaphone size={20} color="#2563EB" />
                   </View>
@@ -205,7 +205,7 @@ export default function BerandaPenghuniScreen() {
                 <TouchableOpacity
                   style={styles.gridCard}
                   activeOpacity={0.7}
-                  onPress={() => Alert.alert('Menu', 'Kamar & Penghuni')}>
+                  onPress={() => router.push('/explore')}>
                   <View style={[styles.gridIconBox, { backgroundColor: '#EEF2FF' }]}>
                     <Building2 size={20} color="#4F46E5" />
                   </View>
@@ -222,7 +222,7 @@ export default function BerandaPenghuniScreen() {
                   <Calendar size={17} color="#2563EB" />
                   <Text style={styles.sectionTitle}>Pengumuman & Agenda</Text>
                 </View>
-                <TouchableOpacity activeOpacity={0.7}>
+                <TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/announcements')}>
                   <Text style={styles.seeAllLink}>Lihat Semua</Text>
                 </TouchableOpacity>
               </View>
@@ -339,7 +339,7 @@ export default function BerandaPenghuniScreen() {
         <TouchableOpacity
           style={styles.navItem}
           activeOpacity={0.8}
-          onPress={() => Alert.alert('Chat', 'Menuju Forum & Chat')}>
+          onPress={() => router.push('/forum')}>
           <View style={{ position: 'relative' }}>
             <MessageSquare size={21} color="#64748B" />
             <View style={styles.navChatDot} />
@@ -351,7 +351,7 @@ export default function BerandaPenghuniScreen() {
         <TouchableOpacity
           style={styles.navItem}
           activeOpacity={0.8}
-          onPress={() => Alert.alert('Profil', 'Menuju Profil & Kamar')}>
+          onPress={() => router.push('/profile')}>
           <User size={21} color="#64748B" />
           <Text style={styles.navLabel}>Profil</Text>
         </TouchableOpacity>

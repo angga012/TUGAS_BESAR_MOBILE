@@ -17,7 +17,7 @@ import {
   User,
   Zap,
 } from "lucide-react-native";
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Alert,
   Image,
@@ -90,10 +90,7 @@ export default function LoginScreen() {
         );
         return;
       }
-      Alert.alert(
-        "Login Pengelola Berhasil",
-        `Selamat datang Pak Hendra di KosSobat Admin Suite!\nID: ${pemilikIdentifier}`,
-      );
+      router.push("/owner-home");
     }
   };
 

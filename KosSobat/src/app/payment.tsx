@@ -76,7 +76,10 @@ export default function PaymentScreen() {
 
         <Text style={styles.topBarTitle}>Bayar Sewa</Text>
 
-        <TouchableOpacity style={styles.avatarCircle} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={styles.avatarCircle}
+          activeOpacity={0.8}
+          onPress={() => router.push('/profile')}>
           <User size={16} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
