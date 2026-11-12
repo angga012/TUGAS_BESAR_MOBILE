@@ -1,0 +1,5 @@
+{
+  "typescript.tsdk": "KosSobat/node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
+}
+
